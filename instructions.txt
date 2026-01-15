@@ -1,0 +1,53 @@
+Follow these steps to calibrate grok  to use to help you trade
+
+IMPORTANT NOTE: 
+
+1- Backtest images provided are for  this protocol, if you create you own protocol, you will need your own back test images and results to calibrate
+
+2- Using screen capture to give ai images works very well, however jamming to much on one screen confuses the ai. take a snapshot of the candles and 1 or 2 indicators on chart, then another snapshot of  the indicators below the chart. its is much easier for the ai to compute. 
+
+
+INSTRUCTIONS:
+
+
+1-	Load the Tokyo protocol and the deterministic engine into the ai ( I used grok, I do not recommend Gemini or chat gpt)
+2-	Ask it to read and understand these documents
+3-	Ask-  Do you understand how they complement each other? Show the clear relationship and division of Labor between them.                                                                     This will give you a side-by-side comparison table, proving it understands the task.
+
+4-	Calibration check.  Below are the 4  calibration I use, real examples, and the correct answers. Upload the charts corresponding to the backtest i.e 2 charts of BTC for the btc backtest, etc
+         
+NOTE: very rarely the answer will be different. I have always found it better to restart the process rather than try to correct it.
+
+BACKTEST  BTC CALIBRATION CHECK 1:
+
+Review this chart, these are real backtests that have been verified. Ensure you get the same result .
+
+Direction: LONG Momentum/pressure: STRONG Conviction: MEDIUM-HIGH
+Opposite Momentum Alert:  none
+
+BACKTEST ETH CALIBRATION CHECK 2:
+
+Review this chart, these are real backtests that have been verified. Ensure you get the same result .
+Direction: LONG Momentum/pressure: OK Conviction: HIGH Opposite Momentum Alert: NONE
+ 
+BACKTEST XRP CALIBRATION CHECK 3
+Review this chart, these are real backtests that have been verified. Ensure you get the same result .
+Direction: SHORT Momentum/pressure: Strong Conviction: MEDIUM-HIGH
+Opposite Momentum Alert: NONE
+ 
+FINAL BACKTEST ADA CALIBRATION CHECK 4
+
+Review this chart, these are real backtests that have been verified. Ensure you get the same result .
+Direction: LONG Momentum/pressure: OK Conviction: HIGH Opposite Momentum Alert: NONE
+ 
+
+5-  Finally ask the AI:
+
+Having read the Tokyo protocol, the deterministic engine and worked through the 4 calibration examples, are you calibrated and ready?
+
+When it answers yes It is now calibrated.
+
+
+
+
+

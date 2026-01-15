@@ -1,0 +1,132 @@
+Thought for 10s\documentclass[12pt, a4paper, final]{article}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\rhead{\textbf{Tokyo Protocol X – Deterministic Engine}}
+\lhead{Rules Reference}
+\cfoot{\thepage}
+\lstset{
+basicstyle=\ttfamily\small,
+backgroundcolor=\color{gray!10},
+breaklines=true,
+frame=single
+}
+\title{\textbf{Tokyo Protocol X}\Deterministic Engine Rules with RSI Integration}
+\author{Rule Set v2.0}
+\date{\today}
+\begin{document}
+\maketitle
+\section*{Purpose}
+Convert Tokyo Protocol X into a deterministic labelling engine with RSI integration. The AI must treat these rules as executable code—no improvisation, no calibration. Same states in $\rightarrow$ same labels out every time.
+\section*{Two-Step Workflow (Mandatory)}
+For every trade, follow this strict sequence:
+\subsection*{Step 1: State Labelling Only}
+Read the \textbf{last 3 completed bars} before the current candle. Output \textbf{only} the indicator states in this format:
+\begin{lstlisting}
+States:
+price_vs_p: ABOVE / BELOW / ON
+macd_lines: UP_SEPARATED / DOWN_SEPARATED / FLAT_NEAR_ZERO / FLAT_HUGGING_ZERO / TURNING / MIXED / CROSSING / DOWN_CROSSING / UP_CROSSING
+macd_hist: STRONG_POSITIVE / SMALL_POSITIVE / STRONG_NEGATIVE / SMALL_NEGATIVE / SHRINKING_TO_ZERO / POS_SHRINK / NEG_SHRINK
+obv_slope: UP / UP_SHALLOW / DOWN / DOWN_SHALLOW / FLAT / FLAT_HEAVY
+obv_div: NONE / BULLISH / BEARISH
+rsi_level: OVERBOUGHT / OVERSOLD / NEUTRAL / STRONG_BULL / STRONG_BEAR
+rsi_div: NONE / BULLISH / BEARISH
+waterfall: YES / NO
+location: NONE / LATE_EXHAUSTION
+\end{lstlisting}
+\textbf{No Direction, Momentum, or Conviction in Step 1.}
+If any state is ambiguous, ask the user to clarify that state only. Do not guess.
+\subsection*{Step 2: Apply Decision Table}
+Using \textbf{only} the Step 1 states and the rules below, output:
+\begin{lstlisting}
+Direction: LONG / SHORT / SKIP
+Momentum/pressure: STRONG / OK / WEAK
+Conviction: HIGH / MEDIUM / LOW
+Opposite Momentum Alert: STRONG BULLISH DIVERGENCE / MODERATE BULLISH DIVERGENCE / STRONG BEARISH DIVERGENCE / MODERATE BEARISH DIVERGENCE / WEAK BULLISH DIVERGENCE / WEAK BEARISH DIVERGENCE / NONE
+\end{lstlisting}
+No extra commentary. No targets. No management.
+\section*{Direction Rules (Hard Code)}
+\textbf{Rule 1:} IF \texttt{price_vs_p = ABOVE} $\Rightarrow$ \texttt{Direction = LONG}.
+\textbf{Rule 2:} IF \texttt{price_vs_p = BELOW} $\Rightarrow$ \texttt{Direction = SHORT}.
+\textbf{Rule 3:} IF \texttt{price_vs_p = ON} AND all SKIP criteria from Tokyo Protocol X are met $\Rightarrow$ \texttt{Direction = SKIP}.
+Otherwise, SKIP is not allowed. Use LONG or SHORT with LOW conviction.
+\textbf{Immutable:} Direction can never be changed by MACD, OBV, RSI, patterns, Waterfall, or Location.
+\section*{Conviction Rules (Mechanical Scoring)}
+Conviction depends on indicator alignment relative to Direction, including RSI as a fourth component.
+\subsection*{LONG Base Conviction}
+Start with \texttt{score = 0}.
+\begin{itemize}
+\item IF \texttt{macd_lines = UP_SEPARATED} $\Rightarrow$ \texttt{score += 1}
+\item IF \texttt{macd_hist} $\in$ {\texttt{STRONG_POSITIVE, SMALL_POSITIVE}} $\Rightarrow$ \texttt{score += 1}
+\item IF \texttt{obv_slope} $\in$ {\texttt{UP, UP_SHALLOW}} AND \texttt{obv_div = NONE} $\Rightarrow$ \texttt{score += 1}
+\item IF \texttt{rsi_level} $\in$ {\texttt{STRONG_BULL, NEUTRAL}} (above 50) AND \texttt{rsi_div = NONE} $\Rightarrow$ \texttt{score += 1}
+\end{itemize}
+Map score to conviction:
+\begin{itemize}
+\item \texttt{score = 4} or \texttt{score = 3} $\Rightarrow$ \texttt{base_conviction = HIGH}
+\item \texttt{score = 2} $\Rightarrow$ \texttt{base_conviction = MEDIUM}
+\item \texttt{score} $\le$ 1 $\Rightarrow$ \texttt{base_conviction = LOW}
+\end{itemize}
+\subsection*{SHORT Base Conviction}
+Start with \texttt{score = 0}.
+\begin{itemize}
+\item IF \texttt{macd_lines = DOWN_SEPARATED} $\Rightarrow$ \texttt{score += 1}
+\item IF \texttt{macd_hist} $\in$ {\texttt{STRONG_NEGATIVE, SMALL_NEGATIVE}} $\Rightarrow$ \texttt{score += 1}
+\item IF \texttt{obv_slope} $\in$ {\texttt{DOWN, DOWN_SHALLOW}} AND \texttt{obv_div = NONE} $\Rightarrow$ \texttt{score += 1}
+\item IF \texttt{rsi_level} $\in$ {\texttt{STRONG_BEAR, NEUTRAL}} (below 50) AND \texttt{rsi_div = NONE} $\Rightarrow$ \texttt{score += 1}
+\end{itemize}
+Map score as above (HIGH=4 or 3, MEDIUM=2, LOW=$\le$1).
+\subsection*{Waterfall / Location / RSI Step-Downs}
+Apply these to \texttt{base_conviction}:
+\begin{itemize}
+\item IF \texttt{waterfall = YES} $\Rightarrow$ drop one level (HIGH$\to$MEDIUM, MEDIUM$\to$LOW, LOW stays LOW)
+\item IF \texttt{location = LATE_EXHAUSTION} $\Rightarrow$ drop one level (same mapping)
+\item IF Direction = LONG AND \texttt{rsi_level = OVERBOUGHT} $\Rightarrow$ drop one level
+\item IF Direction = SHORT AND \texttt{rsi_level = OVERSOLD} $\Rightarrow$ drop one level
+\item If multiple apply, drop at most one level per factor (maximum 3 levels total)
+\end{itemize}
+Final Conviction = base_conviction after all step-downs.
+\section*{Momentum / Pressure Rules}
+Momentum is derived from Waterfall + histogram trend + OBV slope + RSI level. Apply in this order:
+\begin{enumerate}
+\item IF \texttt{macd_lines = FLAT_NEAR_ZERO} $\Rightarrow$ \texttt{Momentum = WEAK}
+\item ELSE IF \texttt{macd_hist = SHRINKING_TO_ZERO} $\Rightarrow$ \texttt{Momentum = WEAK}
+\item ELSE IF \texttt{waterfall = YES} $\Rightarrow$ \texttt{Momentum = STRONG}
+\item ELSE IF (histogram is STRONG_POSITIVE/STRONG_NEGATIVE AND OBV slope is UP/DOWN) OR (\texttt{rsi_level = STRONG_BULL/STRONG_BEAR} aligned with Direction) $\Rightarrow$ \texttt{Momentum = STRONG}
+\item ELSE IF (histogram is SMALL_POSITIVE/SMALL_NEGATIVE AND OBV slope is UP_SHALLOW/DOWN_SHALLOW) OR (\texttt{rsi_level = NEUTRAL} trending toward Direction) $\Rightarrow$ \texttt{Momentum = OK}
+\item ELSE $\Rightarrow$ \texttt{Momentum = WEAK}
+\end{enumerate}
+\textbf{Note:} Waterfall never changes Direction, only Momentum and Conviction.
+\section*{Opposite Momentum Alert (Mandatory)}
+Always include one line in Step 2 output using this exact priority order:
+\begin{enumerate}
+\item STRONG [BULLISH/BEARISH] DIVERGENCE — MACD lines and histogram both clearly separated and angled opposite to Direction OR \texttt{rsi_div} strongly opposing Direction
+\item MODERATE [BULLISH/BEARISH] DIVERGENCE — Exactly one of MACD lines or histogram clearly opposing Direction, or both mildly opposing OR \texttt{rsi_div} moderately opposing
+\item WEAK [BULLISH/BEARISH] DIVERGENCE — Indicators mostly aligned but OBV slope clearly opposing Direction, or classic OBV divergence present OR weak \texttt{rsi_div} present
+\item NONE — All major indicators (MACD lines + histogram + OBV slope + RSI level/div) aligned with Direction or only very minor disagreement
+\end{enumerate}
+Additional mechanical rule: If \texttt{obv_div = BULLISH} or \texttt{BEARISH} is present, upgrade the alert level by one step (WEAK $\to$ MODERATE, MODERATE $\to$ STRONG). If \texttt{rsi_div} also opposes, upgrade by an additional step.
+The alert is always required — never omit it.
+\section*{SKIP Criteria (Strict)}
+Output \texttt{Direction = SKIP} \textbf{only if all} of the following are true over several candles:
+\begin{itemize}
+\item Price hugging P in tight, low-energy chop
+\item \texttt{macd_lines = FLAT_NEAR_ZERO} or meaningless crossings
+\item \texttt{macd_hist = SHRINKING_TO_ZERO} for $\geq$ 3 bars
+\item \texttt{obv_slope = FLAT} or extremely shallow
+\item \texttt{rsi_level = NEUTRAL} (around 50) with no divergence and flat/sideways movement
+\end{itemize}
+If \textbf{any} condition is missing: no SKIP. Use LONG/SHORT with LOW conviction instead.
+\section*{Output Format (Always)}
+\begin{lstlisting}
+Direction: LONG / SHORT / SKIP
+Momentum/pressure: STRONG / OK / WEAK
+Conviction: HIGH / MEDIUM / LOW
+Opposite Momentum Alert: STRONG BULLISH DIVERGENCE / MODERATE BULLISH DIVERGENCE / STRONG BEARISH DIVERGENCE / MODERATE BEARISH DIVERGENCE / WEAK BULLISH DIVERGENCE / WEAK BEARISH DIVERGENCE / NONE
+\end{lstlisting}
+No extra text. No targets. No trade management.
+\vspace{0.5in}
+\textit{When starting a new chat with this ruleset, paste Tokyo Protocol X + this document and state: ``Apply the Deterministic Engine ruleset. Step 1: state labels only. Step 2: compute Direction/Momentum/Conviction.''}
+\end{document}
