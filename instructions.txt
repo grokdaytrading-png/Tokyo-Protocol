@@ -18,24 +18,24 @@ INSTRUCTIONS:
          
 NOTE: very rarely the answer will be different. I have always found it better to restart the process rather than try to correct it.
 
-BACKTEST  BTC CALIBRATION CHECK 1:
+BACKTEST  BTC CALIBRATION CHECK 1: (BTC image 1 and 2)
 
 Review this chart, these are real backtests that have been verified. Ensure you get the same result .
 
 Direction: LONG Momentum/pressure: STRONG Conviction: MEDIUM-HIGH
 Opposite Momentum Alert:  none
 
-BACKTEST ETH CALIBRATION CHECK 2:
+BACKTEST ETH CALIBRATION CHECK 2: (ETH image 1 and 2)
 
 Review this chart, these are real backtests that have been verified. Ensure you get the same result .
 Direction: LONG Momentum/pressure: OK Conviction: HIGH Opposite Momentum Alert: NONE
  
-BACKTEST XRP CALIBRATION CHECK 3
+BACKTEST XRP CALIBRATION CHECK 3 (XRP image 1 and 2)
 Review this chart, these are real backtests that have been verified. Ensure you get the same result .
 Direction: SHORT Momentum/pressure: Strong Conviction: MEDIUM-HIGH
 Opposite Momentum Alert: NONE
  
-FINAL BACKTEST ADA CALIBRATION CHECK 4
+FINAL BACKTEST ADA CALIBRATION CHECK 4 (ADA image 1 and 2)
 
 Review this chart, these are real backtests that have been verified. Ensure you get the same result .
 Direction: LONG Momentum/pressure: OK Conviction: HIGH Opposite Momentum Alert: NONE
@@ -46,6 +46,7 @@ Direction: LONG Momentum/pressure: OK Conviction: HIGH Opposite Momentum Alert: 
 Having read the Tokyo protocol, the deterministic engine and worked through the 4 calibration examples, are you calibrated and ready?
 
 When it answers yes It is now calibrated.
+
 
 
 
