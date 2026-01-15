@@ -65,7 +65,8 @@ Once it demonstrates correct understanding, instruct it to modify the protocol t
 Treat the Tokyo Protocol as a guide and structural reference, not something to copy verbatim — use it like a template.
 
 2. Convert it into a deterministic engine
-Upload the current Deterministic Engine and have the AI review how the rules are structured.
+First -Upload the current Deterministic Engine and have the AI review how the rules are structured.
+
 Then ask it to convert your newly created protocol into a deterministic, rule-based engine that removes interpretation and discretion.
 
 To prove it works, you must backtest it heavily:
