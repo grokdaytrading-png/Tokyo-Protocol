@@ -55,15 +55,27 @@ Adapt parts of it
 
 Or ignore it entirely
 
-If you want to build your own strategy, my recommendation is:
+Building Your Own Version
 
-First, write your own trading protocol (use Tokyo Protocol as a guide, not a template).
+If you want to create your own protocol using your own trading style and preferred indicators, do it in this order:
 
-Then convert that protocol into a deterministic engine with explicit rules an AI can follow.
+1. Create your trading protocol
+Upload the Tokyo Protocol to an AI and ask it to fully understand exactly how it works.
+Once it demonstrates correct understanding, instruct it to modify the protocol to match your own trading style and indicators.
+Treat the Tokyo Protocol as a guide and structural reference, not something to copy verbatim — use it like a template.
 
-Backtest it aggressively before trusting it with capital.
+2. Convert it into a deterministic engine
+Upload the current Deterministic Engine and have the AI review how the rules are structured.
+Then ask it to convert your newly created protocol into a deterministic, rule-based engine that removes interpretation and discretion.
 
-My system is tailored to my approach. If you use it, you’ll likely need to rewrite it to properly fit your own strategy.
+To prove it works, you must backtest it heavily:
+
+Minimum: 30 tests
+
+Recommended: 100 tests
+
+Run these on TradingView and review the results objectively.
+Make rule adjustments based on the data, not on opinion.
 
 Disclaimer
 
